@@ -1,6 +1,6 @@
 'use strict'
 
-exports.signature = function* (next) {
+exports.signature = function *(next) {
   this.body = {
     success: true
   }

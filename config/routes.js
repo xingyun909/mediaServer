@@ -1,21 +1,27 @@
 'use strict'
 
 var Router = require('koa-router')
-var User = require('./controllers/user')
-var App = require('./controllers/app')
-module.exports = function () {
-  var router = new Router({
-    prefix: '/api/1'
-  })
+var User = require('../app/controllers/user')
+var App = require('../app/controllers/app')
+module.exports = function() {
+    var router = new Router({
+        prefix: '/api/1'
+    })
 
 
-  //user
-  router.post('/u/signup', User.signup)
-  router.post('/u/verify', User.verify)
-  router.post('/u/update', User.update)
+    //user
+    router.get('/u/signup', User.signup)
+    router.post('/u/verify', User.verify)
+    router.post('/u/update', User.update)
+    router.get('/', function *(next) {
 
-  // app
-  router.post('/signature', App.signature)
+        this.body = {
+            success: true
+        }
+    })
 
-  return router
+    // app
+    router.post('/signature', App.signature)
+
+    return router
 }
