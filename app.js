@@ -3,9 +3,9 @@
 var fs = require('fs')
 var path =require('path')
 var mongoose =require('mongoose')
-var db = 'mongodb://localhost/demo'
+var db = 'mongodb://localhost:13380/demo'
 
-mongoose.Promise = require('bluebrid')
+mongoose.Promise = require('bluebird')
 mongoose.connect(db)
 
 /****

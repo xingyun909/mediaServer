@@ -19,22 +19,26 @@ var UserSchema  =new mongoose.Schema({
 	meta:{
 		createAt:{
 			type:Date,
-			default:Date.now()
+			default: Date.now()
 		},
 		updateAt:{
 			type:Date,
-			default:Date.now()
+			default: Date.now()
 		}
 	}
 
 })
 
 UserSchema.pre('save',function (next) {
-	if(!this.isNew){
+	console.log('save in')
+
+	if(this.isNew){
 		this.meta.updateAt = Date.now()
 	}
+
+	console.log('next')
 	next()
 })
 
-module.exports = mongoose.modle('User',UserSchema)
+module.exports = mongoose.model('User',UserSchema)
   
