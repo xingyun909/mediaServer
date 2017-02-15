@@ -13,10 +13,10 @@ exports.signup = function * (next) {
         .findOne({phoneNumber: phoneNumber})
         .exec() //调用exec使其promise
 
-    if (!user) {
+    if (!user) { //用户不存在加入用户 ，存在添加验证码，
         user = new User({phoneNumber: xss(phoneNumber)})
     } else {
-        user.verifyCode = '21432'
+        user.verifyCode = '21432'   //验证码动态生成
     }
 
     console.log(user)

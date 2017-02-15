@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose')
 
-var UserSchema  =new mongoose.Schema({
+var UserSchema  =new mongoose.Schema({ //约定
 
 	phoneNumber:{
 		unique :true,
@@ -32,7 +32,7 @@ var UserSchema  =new mongoose.Schema({
 UserSchema.pre('save',function (next) {
 	console.log('save in')
 
-	if(this.isNew){
+	if(!this.isNew){
 		this.meta.updateAt = Date.now()
 	}
 
@@ -40,5 +40,7 @@ UserSchema.pre('save',function (next) {
 	next()
 })
 
+
+//将Schema发布为Model
 module.exports = mongoose.model('User',UserSchema)
   

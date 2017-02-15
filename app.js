@@ -5,8 +5,24 @@ var path =require('path')
 var mongoose =require('mongoose')
 var db = 'mongodb://localhost:13380/demo'
 
+
+/**
+ *连接数据库
+ */
 mongoose.Promise = require('bluebird')
 mongoose.connect(db)
+
+mongoose.connection.on('connected',function(){
+	console.log('Mongoose connected to '+db)
+})
+mongoose.connection.on('error',function(){
+	console.log('Mongoose connection error')
+})
+mongoose.connection.on('disconnected',function(){
+	console.log('Mongoose disconnected')
+})
+
+
 
 /****
 * 引入所有的模型文件
@@ -23,7 +39,7 @@ var  walk = function (modlePath) {
 		var stat = fs.statSync(filePath)
 
 		if(stat.isFile()){
-			if(/(.*)\.(js|coffee)/.test(file)){
+			if(/(.*)\.(js|coffee)/.test(file)){ //满足后缀.js或.coffee 加载模型文件
 				require(filePath)
 			}
 		}else if(stat.isDirectory()){
@@ -33,7 +49,8 @@ var  walk = function (modlePath) {
 }
 
 walk(models_path)
-//
+
+/**********************************/
 
 var koa = require('koa')
 var logger = require('koa-logger')
