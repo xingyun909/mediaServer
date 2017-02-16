@@ -10,8 +10,7 @@ var sms = require('../service/sms')
  * 注册用户
  */
 exports.signup = function * (next) {
-    var phoneNumber = this.request.body.phoneNumber //post 获取参数
-    var verifyCode = this.request.body.verifyCode
+    var phoneNumber = xss(this.request.body.phoneNumber.trim()) //post 获取参数
     console.log(this.request.body)
     // var phoneNumber = this.query.phoneNumber      //get 获取参数
     console.log('查询数据库');
@@ -86,7 +85,7 @@ exports.verify = function * (next) {
         console.log('验证未通过1')
         this.body = {
             success: false,
-            error: '验证未通过'
+            error: '验证未通过2'
         }
         return next
     }
@@ -114,7 +113,7 @@ exports.verify = function * (next) {
         console.log('验证未通过2')
         this.body = {
             success: false,
-            error: '验证未通过'
+            error: '验证未通过2'
         }
         return next
     }
@@ -126,27 +125,7 @@ exports.verify = function * (next) {
 exports.update = function * (next) {
     var body = this.request.body
     var accessToken = body.accessToken
-
-    //根据用户accessToken从用户表查询
-    var user = yield User
-        .findOne({accessToken: accessToken})
-        .exec()
-
-    if (!accessToken) {
-        this.body = {
-            success: false,
-            error: '用户未找到'
-        }
-        return next
-    }
-    //处理用户未找到
-    if (!user) {
-        this.body = {
-            success: false,
-            error: '用户未找到'
-        }
-        return next
-    }
+    var user = this.session.user //已经通过中间件hanToken处理过
 
     //为用户更新并保存
 
@@ -154,7 +133,7 @@ exports.update = function * (next) {
 
     fields.forEach(function (field) {
         if (body[field]) {
-            user[field] = body[field]
+            user[field] = xss(body[field].trim())
         }
     })
 
