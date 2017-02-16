@@ -34,8 +34,8 @@ var UserSchema  =new mongoose.Schema({ //约定
 })
 
 UserSchema.pre('save',function (next) {
-	console.log('save in')
-
+	// console.log('save in')
+	// console.log('verified:'+this.verified)
 	if(!this.isNew){
 		this.meta.updateAt = Date.now()
 	}

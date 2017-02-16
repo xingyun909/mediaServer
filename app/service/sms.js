@@ -9,7 +9,7 @@ var speakeasy = require('speakeasy') //用于生成验证码
  */
 exports.getCode = function () {
     var code = speakeasy.totp({
-        secrect: 'test', //私钥
+        secret: 'test', //私钥
         digits: 4 //生成位数
     })
 
@@ -57,11 +57,11 @@ exports.send = function (phoneNumber, msg) {
             res.on('end', function () {
                 var data;
                 try {
-                    data = JSON.parse(data)
+                    data = JSON.parse(str)
                 } catch (e) {
                     reject(e)
                 }
-
+                console.log(data)
                 if (data.error === 0) {
                     resolve(data)
                 } else {
@@ -76,7 +76,7 @@ exports.send = function (phoneNumber, msg) {
                         '-42': '验证码类短信发送频率过快 前台增加60秒获取限制',
                         '-50': '请求发送IP不在白名单内 查看触发短信IP白名单的设置'
                     };
-                    
+
                     reject(new Error(errorMap[data.error]))
                 }
                 console.log('over');

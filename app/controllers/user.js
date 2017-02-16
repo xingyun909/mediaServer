@@ -11,17 +11,21 @@ var sms = require('../service/sms')
  */
 exports.signup = function * (next) {
     var phoneNumber = this.request.body.phoneNumber //post 获取参数
+    var verifyCode = this.request.body.verifyCode
+    console.log(this.request.body)
     // var phoneNumber = this.query.phoneNumber      //get 获取参数
-
+    console.log('查询数据库');
     var user = yield User
         .findOne({phoneNumber: phoneNumber})
         .exec() //调用exec使其promise
 
+    console.log('生成验证吗');
     var verifyCode = sms.getCode()
 
+    console.log('判断用户');
     if (!user) { //用户不存在加入用户 ，存在添加验证码，
         var accessToken = uuid.v4()
-
+        console.log('phoneNumber is :' + phoneNumber)
         user = new User({
             phoneNumber: xss(phoneNumber), //xss验证安全
             verifyCode: verifyCode,
@@ -53,7 +57,7 @@ exports.signup = function * (next) {
     try {
         sms.send(phoneNumber, msg)
     } catch (error) {
-        console.log(error)
+        console('短息发送错误：' + error)
 
         this.body = {
             success: false,
@@ -77,7 +81,9 @@ exports.verify = function * (next) {
     var verifyCode = this.request.body.verifyCode
     var phoneNumber = this.request.body.phoneNumber
 
+    console.log(this.request.body)
     if (!verifyCode || !phoneNumber) {
+        console.log('验证未通过1')
         this.body = {
             success: false,
             error: '验证未通过'
@@ -91,7 +97,7 @@ exports.verify = function * (next) {
         .exec()
 
     if (user) {
-        user.verifid = true
+        user.verified = true
         user = yield user.save()
 
         this.body = {
@@ -103,15 +109,14 @@ exports.verify = function * (next) {
                 id: user.id
             }
         }
+        return next;
     } else {
+        console.log('验证未通过2')
         this.body = {
             success: false,
             error: '验证未通过'
         }
-    }
-
-    this.body = {
-        success: true
+        return next
     }
 }
 
@@ -127,6 +132,13 @@ exports.update = function * (next) {
         .findOne({accessToken: accessToken})
         .exec()
 
+    if (!accessToken) {
+        this.body = {
+            success: false,
+            error: '用户未找到'
+        }
+        return next
+    }
     //处理用户未找到
     if (!user) {
         this.body = {
