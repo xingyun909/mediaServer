@@ -2,13 +2,29 @@
 
 var mongoose = require('mongoose')
 var User = mongoose.model('User')
+var predownload = require('./service/predownload')
 
+/**
+ * 签名
+ */
 exports.signature = function * (next) {
+  var body = this.request.body
+  var key = body.key
+  var qiniuToken
+
+  if(key){
+    qiniuToken = predownload.getQiniuToken
+  }
+
   this.body = {
-    success: true
+    success: true,
+    data:qiniuToken
   }
 }
 
+/**
+ * 验证请求的body
+ */
 exports.hasBody = function * (next) {
   var body = this.request.body || {}
   if (Object.keys(body).length === 0) {
@@ -20,6 +36,10 @@ exports.hasBody = function * (next) {
   }
   yield next
 }
+
+/***
+ * 验证请求的token
+ */
 exports.hasToken = function * (next) {
   var accessToken = this.query.accessToken
 
