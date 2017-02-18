@@ -1,7 +1,7 @@
 'use strict'
 
 var qiniu = require('qiniu')
-var config = require('../../config/predownload')
+var config = require('../../config/config')
 
 qiniu.conf.ACCESS_KEY = config.ACCESS_KEY
 qiniu.conf.SECRET_KEY = config.SECRET_KEY

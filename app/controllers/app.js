@@ -2,7 +2,7 @@
 
 var mongoose = require('mongoose')
 var User = mongoose.model('User')
-var predownload = require('./service/predownload')
+var predownload = require('../service/predownload')
 
 /**
  * 签名
